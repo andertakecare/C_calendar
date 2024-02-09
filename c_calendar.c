@@ -1,21 +1,23 @@
 #include <stdio.h>
 #include <stdbool.h> // for bool type
 #include <limits.h>  // for INT_MAX and INT_MIN
-// #include <time.h>    // for getting current date
+#include <time.h>    // for getting current date
+#include <string.h>  // for string manipulation
 
 // Function prototypes
-int inputChecker(int min, int max);
-bool isLeap(int);
 int askForYear();
 void calculateDate(int *month, int *day, int *year, int daysPassed);
+void getCurrDate();
 void clearInputBuffer();
+int inputChecker(int min, int max);
+bool isLeap(int);
 
 // Global variables
 const int daysInMonth[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; // 0 is a placeholder for the unused 0th index to make more logical to access based on month number
+char currDate[11];
 
 int main()
 {
-    // char [] currDate = getCurrDate();
     printf("Welcome to the calendar program.\n");
     while (true)
     {
@@ -26,37 +28,31 @@ int main()
         printf("3. Exit.\n");
         option = inputChecker(1, 3);
 
-        switch(option)
+        switch (option)
         {
-            case 1:
-                printf("This program calculates the date based on the number of days passed.\n");
-                // calculateDate();
-                break;
-            case 2:
-                printf("This program checks if a year is a leap year.\n");
-                break;
-            case 3:
-                printf("Exiting program.\n");
-                return 0;
+        case 1:
+            printf("This program calculates the date based on the number of days passed.\n");
+            getCurrDate();
+            for(int i = 0; i < strlen(currDate); i++){
+                // printf("%c\n", currDate[i]);
+            }
+            break;
+        case 2:
+            printf("This program checks if a year is a leap year.\n");
+            int year = askForYear();
+            if (isLeap(year))
+            {
+                printf("%i is a leap year.\n", year);
+            }
+            else
+            {
+                printf("%i is not a leap year.\n", year);
+            }
+            break;
+        case 3:
+            printf("Exiting program.\n");
+            return 0;
         }
-
-        // if (scanf("%i", &option) < 1 || scanf("%i", &option) > 3)
-        // {
-        //     printf("Invalid input. Please try again.\n");
-        //     scanf("%*[^\n]"); // clear input buffer
-        //     continue;
-        // }
-    }
-
-    int year = askForYear();
-
-    if (isLeap(year))
-    {
-        printf("%i is a leap year.\n", year);
-    }
-    else
-    {
-        printf("%i is not a leap year.\n", year);
     }
 }
 
@@ -67,7 +63,6 @@ int inputChecker(int min, int max)
     {
         if ((scanf("%i", &option) == 1) && (option >= min && option <= max))
         {
-            printf("%s\n", "This worked DELETE ME!");
             break;
         }
         else
@@ -130,4 +125,17 @@ int askForYear()
 void calculateDate(int *month, int *day, int *year, int daysPassed)
 {
     // TODO
+}
+
+void getCurrDate()
+{
+    //Get current time
+    time_t current_time;
+    struct tm *local_time;
+
+    time(&current_time);
+    local_time = localtime(&current_time);
+    // char currDate[11];
+    strftime(currDate, sizeof(currDate), "%Y/%m/%d", local_time);
+    printf("The current date is: %s\n", currDate);
 }
